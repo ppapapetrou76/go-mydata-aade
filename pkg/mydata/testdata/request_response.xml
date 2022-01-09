@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RequestedDoc xmlns:icls="https://www.aade.gr/myDATA/incomeClassificaton/v1.0" xmlns:ecls="https://www.aade.gr/myDATA/expensesClassificaton/v1.0" xmlns="http://www.aade.gr/myDATA/invoice/v1.0">
+    <invoicesDoc>
+        <invoice>
+            <uid>123</uid>
+            <mark>mark123</mark>
+            <issuer>
+                <vatNumber>123456789</vatNumber>
+                <country>GR</country>
+                <branch>0</branch>
+            </issuer>
+            <counterpart>
+                <vatNumber>987654321</vatNumber>
+                <country>GR</country>
+                <branch>0</branch>
+                <address>
+                    <street>Some address</street>
+                    <number>100</number>
+                    <postalCode>11111</postalCode>
+                    <city>Athens</city>
+                </address>
+            </counterpart>
+            <invoiceHeader>
+                <series>~</series>
+                <aa>23</aa>
+                <issueDate>2021-02-10</issueDate>
+                <invoiceType>2.1</invoiceType>
+                <vatPaymentSuspension>false</vatPaymentSuspension>
+                <currency>EUR</currency>
+            </invoiceHeader>
+            <paymentMethods>
+                <paymentMethodDetails>
+                    <type>5</type>
+                    <amount>62</amount>
+                    <paymentMethodInfo>some payment info</paymentMethodInfo>
+                </paymentMethodDetails>
+            </paymentMethods>
+            <invoiceDetails>
+                <lineNumber>1</lineNumber>
+                <netValue>50</netValue>
+                <vatCategory>1</vatCategory>
+                <vatAmount>12</vatAmount>
+                <lineComments>LineItems</lineComments>
+            </invoiceDetails>
+            <invoiceSummary>
+                <totalNetValue>50</totalNetValue>
+                <totalVatAmount>12</totalVatAmount>
+                <totalWithheldAmount>0</totalWithheldAmount>
+                <totalFeesAmount>0</totalFeesAmount>
+                <totalStampDutyAmount>0</totalStampDutyAmount>
+                <totalOtherTaxesAmount>0</totalOtherTaxesAmount>
+                <totalDeductionsAmount>0</totalDeductionsAmount>
+                <totalGrossValue>62</totalGrossValue>
+            </invoiceSummary>
+        </invoice>
+    </invoicesDoc>
+</RequestedDoc>

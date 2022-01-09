@@ -1,0 +1,73 @@
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - paralleltest
+        - testpackage
+        - goerr113
+        - varnamelen
+
+linters:
+  enable-all: true
+  disable:
+    - lll
+    - wsl
+    - exhaustivestruct
+    - gomoddirectives
+    - goerr113
+    # The following linters are deprecated
+    - scopelint
+    - golint
+    - interfacer
+    - maligned
+
+linters-settings:
+  govet:
+    check-shadowing: false
+
+  gofmt:
+    simplify: true
+
+  golint:
+    min-confidence: 0
+
+  gocyclo:
+    # minimal code complexity to report, 30 by default (we should lower it to around 15-17)
+    min-complexity: 25
+
+  maligned:
+    # print struct with more effective memory layout or not, false by default
+    suggest-new: true
+
+  misspell:
+    locale: US
+
+  goimports:
+    local-prefixes: github.com/ppapapetrou76/go-mydata-aade
+
+  gocritic:
+    enabled-tags:
+      - performance
+      - style
+      - experimental
+
+  wrapcheck:
+    # An array of strings that specify substrings of signatures to ignore.
+    # If this set, it will override the default set of ignored signatures.
+    # See https://github.com/tomarrell/wrapcheck#configuration for more information.
+    ignoreSigs:
+      - .Errorf(
+      - errors.New(
+      - errors.Unwrap(
+      - .Wrap(
+      - .Wrapf(
+      - .WithMessage(
+      - .WithMessagef(
+      - .WithStack(
+      - multierror.NewPrefixed(
+      - .ErrorOrNil()
+output:
+  format: tab

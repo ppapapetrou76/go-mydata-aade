@@ -1,0 +1,7 @@
+#### API Client generation targets
+
+## Generates the client code by using the openapi file found under the api folder
+generate-client: deps
+	@ echo "-> Generating api client code..."
+	@ oapi-codegen -generate types,client -package api -o internal/api/client.go api/myDATA.openapi.yaml
+	@ echo "-> Done."

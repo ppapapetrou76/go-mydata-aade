@@ -1,0 +1,57 @@
+#### Installs project dependencies.
+
+OS:=$(shell uname -s | tr '[:upper:]' '[:lower:]')
+ARCH:=$(shell $(PWD)/scripts/uname_arch.sh)
+VERSION_DIR:=$(GOBIN)/versions
+
+VERSION_GOBIN:=v0.0.14
+VERSION_GOLANGCILINT:=v1.43.0
+VERSION_GOJUNITREPORT:=v0.9.1
+VERSION_OAPICODEGEN:=v1.9.0
+
+## Installs go modules.
+mods:
+	@ go mod download
+	@ go mod tidy
+
+## Installs all the required binaries for the makefile targets.
+deps: $(GOBIN)/gobin $(GOBIN)/golangci-lint $(GOBIN)/go-junit-report $(GOBIN)/oapi-codegen
+
+$(GOBIN):
+	@ mkdir -p $(GOBIN)
+
+$(VERSION_DIR): | $(GOBIN)
+	@ mkdir -p $(GOBIN)/versions
+
+$(VERSION_DIR)/.version-gobin-$(VERSION_GOBIN): | $(VERSION_DIR)
+	@ rm -f $(VERSION_DIR)/.version-gobin-*
+	@ echo $(VERSION_GOBIN) > $(VERSION_DIR)/.version-gobin-$(VERSION_GOBIN)
+
+$(GOBIN)/gobin: $(VERSION_DIR)/.version-gobin-$(VERSION_GOBIN) | $(GOBIN)
+	@ echo "-> Installing gobin..."
+	@ curl -sL -o $(GOBIN)/gobin https://github.com/myitcv/gobin/releases/download/$(VERSION_GOBIN)/$(OS)-$(ARCH)
+	@ chmod +x $(GOBIN)/gobin
+
+$(VERSION_DIR)/.version-golangci-lint-$(VERSION_GOLANGCILINT): | $(VERSION_DIR)
+	@ rm -f $(VERSION_DIR)/.version-golangci-lint-*
+	@ echo $(VERSION_GOLANGCILINT) > $(VERSION_DIR)/.version-golangci-lint-$(VERSION_GOLANGCILINT)
+
+$(GOBIN)/golangci-lint: $(VERSION_DIR)/.version-golangci-lint-$(VERSION_GOLANGCILINT) | $(GOBIN)
+	@ echo "-> Installing golangci-lint..."
+	@ curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(GOBIN) $(VERSION_GOLANGCILINT)
+
+$(VERSION_DIR)/.version-go-junit-report-$(VERSION_GOJUNITREPORT): | $(VERSION_DIR)
+	@ rm -f $(VERSION_DIR)/.version-go-junit-report-*
+	@ echo $(VERSION_GOJUNITREPORT) > $(VERSION_DIR)/.version-go-junit-report-$(VERSION_GOJUNITREPORT)
+
+$(GOBIN)/go-junit-report: $(GOBIN)/gobin $(VERSION_DIR)/.version-go-junit-report-$(VERSION_GOJUNITREPORT) | $(GOBIN)
+	@ echo "-> Installing go-junit-report..."
+	@ $(GOBIN)/gobin github.com/jstemmer/go-junit-report@$(VERSION_GOJUNITREPORT)
+
+$(VERSION_DIR)/.version-oapi-codegen-$(VERSION_OAPICODEGEN): | $(VERSION_DIR)
+	@ rm -f $(VERSION_DIR)/.version-oapi-codegen-*
+	@ echo $(VERSION_OAPICODEGEN) > $(VERSION_DIR)/.version-oapi-codegen-$(VERSION_OAPICODEGEN)
+
+$(GOBIN)/oapi-codegen: $(GOBIN)/gobin $(VERSION_DIR)/.version-oapi-codegen-$(VERSION_OAPICODEGEN) | $(GOBIN)
+	@ echo "-> Installing oapi-codegen..."
+	@ go get github.com/deepmap/oapi-codegen@$(VERSION_OAPICODEGEN)

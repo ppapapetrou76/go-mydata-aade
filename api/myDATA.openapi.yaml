@@ -1,0 +1,152 @@
+openapi: 3.0.1
+info:
+  title: myDATA
+  description: 'REST API για την αποστολή και λήψη δεδομένων παραστατικών, χαρακτηρισμών εσόδων-εξόδων και λογιστικών εγγραφών τακτοποίησης στην ηλεκτρονική πλατφόρμα myDATA'
+  version: '1.0'
+servers:
+  - url: https://mydata-prod-apim.azure-api.net/myDATA
+paths:
+  /SendInvoices:
+    post:
+      summary: SendInvoices
+      description: Με τη κλήση αποστέλλεται ακολουθία από ένα ή περισσότερα παραστατικά.
+      operationId: post-sendinvoices
+      parameters:
+        - name: aade-user-id
+          in: header
+          description: User Id
+          required: true
+          schema:
+            enum:
+              - '{aade-user-id}'
+            type: string
+      responses:
+        '200':
+          description: 
+  /RequestTransmittedDocs:
+    get:
+      summary: RequestTransmittedDocs
+      description: "Η κλήση επιστρέφει όσα παραστατικά, χαρακτηρισμούς και ακυρώσεις παραστατικών έχει υποβάλει η οντότητα που αντιστοιχεί στο όνομα χρήστη και subscription key, και αναγνωριστικό Μοναδικό Αριθμό Καταχώρησης μεγαλύτερο του mark. \nH απάντηση της κλήσης είναι μορφής XML, σύμφωνα με το: <a href=\"https://apimgmtstu2uzdx6cqwpx6k3.blob.core.windows.net/content/MediaLibrary/schemata/0.6/requestDoc-v0.6.xsd\">requestDoc-v0.6.xsd</a>. To xsd της μεθόδου, χρησιμοποιεί τύπους στοιχείων που περιέχονται στα <a href=\"https://apimgmtstu2uzdx6cqwpx6k3.blob.core.windows.net/content/MediaLibrary/schemata/0.6/invoicesDoc-v0.6.xsd\">invoicesDoc-v0.6.xsd</a>, <a href=\"https://apimgmtstu2uzdx6cqwpx6k3.blob.core.windows.net/content/MediaLibrary/schemata/0.6/expensesClassification-v0.6.xsd\">expensesClassification-v0.6.xsd</a> και <a href=\"https://apimgmtstu2uzdx6cqwpx6k3.blob.core.windows.net/content/MediaLibrary/schemata/0.6/incomeClassification-v0.6.xsd\">incomeClassification-v0.6.xsd</a>"
+      operationId: get-requesttransmitteddocs
+      parameters:
+        - name: mark
+          in: query
+          description: Μοναδικός Αριθμός Καταχώρησης
+          required: true
+          schema:
+            enum:
+              - '{mark}'
+            type: string
+            default: '{mark}'
+        - name: aade-user-id
+          in: header
+          description: User Id
+          required: true
+          schema:
+            enum:
+              - '{aade-user-id}'
+            type: string
+            default: '{aade-user-id}'
+      responses:
+        '200':
+          description: 
+  /CancelInvoice:
+    post:
+      summary: CancelInvoice
+      description: 'Διαδικασία ακύρωσης παραστατικού, δίχως επαναϋποβολή νέου'
+      operationId: post-cancelinvoice
+      parameters:
+        - name: mark
+          in: query
+          description: "Μοναδικός αριθμός καταχώρησης\nπαραστατικού προς ακύρωση "
+          required: true
+          schema:
+            enum:
+              - '{mark}'
+            type: string
+            default: '{mark}'
+        - name: aade-user-id
+          in: header
+          description: User Id
+          required: true
+          schema:
+            enum:
+              - '{aade-user-id}'
+            type: string
+            default: '{aade-user-id}'
+      responses:
+        '200':
+          description: 
+  /RequestDocs:
+    get:
+      summary: RequestDocs
+      description: "Η κλήση επιστρέφει όσα παραστατικά, χαρακτηρισμούς και ακυρώσεις παραστατικών έχουν υποβάλλει άλλοι χρήστες και αφορούν ως λήπτη την οντότητα που αντιστοιχεί στο όνομα χρήστη και subscription key, και αναγνωριστικό Μοναδικό Αριθμό Καταχώρησης μεγαλύτερο του mark. \nH απάντηση της κλήσης είναι μορφής XML, σύμφωνα με το: <a href=\"https://apimgmtstu2uzdx6cqwpx6k3.blob.core.windows.net/content/MediaLibrary/schemata/0.6/requestDoc-v0.6.xsd\">requestDoc-v0.6.xsd</a>. To xsd της μεθόδου, χρησιμοποιεί τύπους στοιχείων που περιέχονται στα <a href=\"https://apimgmtstu2uzdx6cqwpx6k3.blob.core.windows.net/content/MediaLibrary/schemata/0.6/invoicesDoc-v0.6.xsd\">invoicesDoc-v0.6.xsd</a>, <a href=\"https://apimgmtstu2uzdx6cqwpx6k3.blob.core.windows.net/content/MediaLibrary/schemata/0.6/expensesClassification-v0.6.xsd\">expensesClassification-v0.6.xsd</a> και <a href=\"https://apimgmtstu2uzdx6cqwpx6k3.blob.core.windows.net/content/MediaLibrary/schemata/0.6/incomeClassification-v0.6.xsd\">incomeClassification-v0.6.xsd</a>"
+      operationId: get-requestdocs
+      parameters:
+        - name: mark
+          in: query
+          description: Μοναδικός Αριθμός Καταχώρησης
+          schema:
+            enum:
+              - '{mark}'
+            type: string
+        - name: aade-user-id
+          in: header
+          description: aade-user-id
+          required: true
+          schema:
+            enum:
+              - '{aade-user-id}'
+            type: string
+      responses:
+        '200':
+          description: 
+  /SendIncomeClassification:
+    post:
+      summary: SendIncomeClassification
+      description: 'Με τη κλήση αποστέλλεται μία ακολουθία από ένα ή περισσότερους χαρακτηρισμούς εξόδων. '
+      operationId: post-sendincomeclassification
+      parameters:
+        - name: aade-user-id
+          in: header
+          description: User Id
+          required: true
+          schema:
+            enum:
+              - '{aade-user-id}'
+            type: string
+            default: '{aade-user-id}'
+      responses:
+        '200':
+          description: 
+  /SendExpensesClassification:
+    post:
+      summary: SendExpensesClassification
+      description: Με τη κλήση αποστέλλεται μία ακολουθία από ένα ή περισσότερους χαρακτηρισμούς εξόδων.
+      operationId: post-sendexpensesclassification
+      parameters:
+        - name: '{aade-user-id}'
+          in: header
+          description: User Id
+          required: true
+          schema:
+            enum:
+              - '{aade-user-id}'
+            type: string
+            default: '{aade-user-id}'
+      responses:
+        '200':
+          description: 
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]

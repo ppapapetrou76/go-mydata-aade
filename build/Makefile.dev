@@ -1,0 +1,30 @@
+#### Development targets
+
+## Formats code and fixes as many as possible linter errors
+format: mods deps
+	@ echo "-> Formatting/auto-fixing Go files..."
+	@ $(GOBIN)/golangci-lint run --fix
+	@ echo "-> Done."
+
+## Runs various checks
+lint: mods deps
+	@ echo "-> Running linters..."
+	@ $(GOBIN)/golangci-lint run
+	@ echo "-> Done."
+
+## Runs unit tests
+test: mods
+	@ echo "-> Running unit tests..."
+	@ go test -timeout 10s -p 4 -count=1 ./...
+	@ echo "-> Done."
+
+## Moves the project git-hooks to the git hooks directory
+git-hooks:
+	@ cp -v scripts/hooks/* .git/hooks
+
+## Removes git hooks managed by git from git hooks directory
+git-unhooks:
+	@  ls scripts/hooks/ | xargs -tn1 -I{} rm -f .git/hooks/{}
+
+.PHONY: run-githook
+run-githook: format lint test
