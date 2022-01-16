@@ -3,7 +3,7 @@
     <invoicesDoc>
         <invoice>
             <uid>123</uid>
-            <mark>mark123</mark>
+            <mark>321</mark>
             <issuer>
                 <vatNumber>123456789</vatNumber>
                 <country>GR</country>

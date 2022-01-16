@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"io"
@@ -11,13 +12,26 @@ import (
 	"testing"
 
 	"github.com/ppapapetrou76/go-testing/assert"
+	"github.com/ppapapetrou76/go-utils/pkg/types"
 
 	"github.com/ppapapetrou76/go-mydata-aade/internal/httpmock"
-	"github.com/ppapapetrou76/go-mydata-aade/pkg/types"
+	"github.com/ppapapetrou76/go-mydata-aade/pkg/models"
 )
 
 //go:embed testdata/request_response.xml
 var response []byte
+
+//go:embed testdata/cancel_success.xml
+var cancelSuccessResp []byte
+
+//go:embed testdata/cancel_error.xml
+var cancelErrorResp []byte
+
+//go:embed testdata/send_success.xml
+var sendSuccessResp []byte
+
+//go:embed testdata/send_errors.xml
+var sendErrorResp []byte
 
 func TestAuthHeaderProvider_Intercept(t *testing.T) {
 	authHeaderProvider := AuthHeaderProvider{
@@ -30,6 +44,30 @@ func TestAuthHeaderProvider_Intercept(t *testing.T) {
 	assert.ThatError(t, err).IsNil()
 	assert.That(t, req.Header.Get("aade-user-id")).IsEqualTo("userID")
 	assert.That(t, req.Header.Get("Ocp-Apim-Subscription-Key")).IsEqualTo("subKey")
+}
+
+func TestBodyProvider_Intercept(t *testing.T) {
+	t.Run("should succeed", func(t *testing.T) {
+		body := &models.InvoicesDoc{Invoices: []models.Invoice{
+			expectedInvoice(),
+		}}
+		bodyProvider := BodyProvider{
+			Body: body,
+		}
+		req := &http.Request{}
+		err := bodyProvider.Intercept(context.Background(), req)
+
+		assert.ThatError(t, err).IsNil()
+		defer req.Body.Close()
+		rawBody, err := io.ReadAll(req.Body)
+		assert.ThatError(t, err).IsNil()
+
+		expectedBody := &models.InvoicesDoc{}
+		err = xml.Unmarshal(rawBody, expectedBody)
+		assert.ThatError(t, err).IsNil()
+
+		assert.That(t, expectedBody).IsEqualTo(body)
+	})
 }
 
 func TestNewClient(t *testing.T) {
@@ -78,7 +116,179 @@ func TestClient_RequestTransmittedDocs(t *testing.T) {
 	runRequestTest(t, client, client.RequestTransmittedDocs, "RequestTransmittedDocs", "getting transmitted docs")
 }
 
-func runRequestTest(t *testing.T, client *Client, f func() (*types.RequestedDoc, error), path, errPrefix string) {
+func TestClient_CancelDoc(t *testing.T) {
+	ft := assert.NewFluentT(t)
+	client, err := NewClient(&Config{UserID: "123", SubscriptionKey: "321"})
+	ft.AssertThat(err).IsNil()
+	t.Run("should fail if api call fails", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{}, errors.New("host not found")))
+
+		docs, err := client.CancelDoc(123)
+		ft.AssertThat(docs).IsNil()
+		assert.ThatError(t, err).HasExactMessage("canceling doc: api client failed: Post \"https://mydata-dev.azure-api.net/CancelInvoice?mark=123\": host not found")
+	})
+
+	t.Run("should fail if api call returns an unexpected error", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusBadRequest,
+				Body:       io.NopCloser(bytes.NewBuffer([]byte("bad request"))),
+			}, nil))
+
+		docs, err := client.CancelDoc(123)
+		ft.AssertThat(docs).IsNil()
+		assert.ThatError(t, err).HasExactMessage("canceling doc: unexpected status code (400): bad request")
+	})
+
+	t.Run("should fail if api call returns a malformed XML doc", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBuffer([]byte("{}"))),
+			}, nil))
+
+		docs, err := client.CancelDoc(123)
+		ft.AssertThat(docs).IsNil()
+		assert.ThatError(t, err).HasExactMessage("canceling doc: xml parser failed EOF")
+	})
+
+	t.Run("should succeed with no errors", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBuffer(cancelSuccessResp)),
+			}, nil))
+
+		resp, err := client.CancelDoc(123)
+		ft.AssertThat(err).IsNil()
+		ft.AssertThat(resp).IsNotNil().IsEqualTo([]*models.Response{{
+			StatusCode:       "Success",
+			CancellationMark: types.NewUint64(400001868549300),
+		}})
+	})
+
+	t.Run("should succeed with errors", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBuffer(cancelErrorResp)),
+			}, nil))
+
+		resp, err := client.CancelDoc(123)
+		assert.ThatError(t, err).
+			IsNotNil().
+			HasExactMessage("canceling doc Code:251 - Message:Invoice with MARK 400001868549153 cannot be canceled because of being already canceled")
+		ft.AssertThat(resp).IsNotNil().IsEqualTo([]*models.Response{{
+			StatusCode: "ValidationError",
+			Errors: models.Errors{Error: []models.Error{
+				{
+					Message: "Invoice with MARK 400001868549153 cannot be canceled because of being already canceled",
+					Code:    "251",
+				},
+			}},
+		}})
+	})
+}
+
+func TestClient_SendDocs(t *testing.T) {
+	ft := assert.NewFluentT(t)
+	client, err := NewClient(&Config{UserID: "123", SubscriptionKey: "321"})
+	ft.AssertThat(err).IsNil()
+	t.Run("should fail if api call fails", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{}, errors.New("host not found")))
+
+		docs, err := client.SendDocs(&models.InvoicesDoc{})
+		ft.AssertThat(docs).IsNil()
+		assert.ThatError(t, err).HasExactMessage("sending doc: Post \"https://mydata-dev.azure-api.net/SendInvoices\": host not found")
+	})
+
+	t.Run("should fail if api call returns an unexpected error", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusBadRequest,
+				Body:       io.NopCloser(bytes.NewBuffer([]byte("bad request"))),
+			}, nil))
+
+		docs, err := client.SendDocs(&models.InvoicesDoc{})
+		ft.AssertThat(docs).IsNil()
+		assert.ThatError(t, err).HasExactMessage("sending doc: unexpected status code (400): bad request")
+	})
+
+	t.Run("should fail if api call returns a malformed XML doc", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBuffer([]byte("{}"))),
+			}, nil))
+
+		docs, err := client.SendDocs(&models.InvoicesDoc{})
+		ft.AssertThat(docs).IsNil()
+		assert.ThatError(t, err).HasExactMessage("sending doc: xml parser failed EOF")
+	})
+
+	t.Run("should succeed with no errors", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBuffer(sendSuccessResp)),
+			}, nil))
+
+		resp, err := client.SendDocs(&models.InvoicesDoc{})
+		ft.AssertThat(err).IsNil()
+		ft.AssertThat(resp).IsNotNil().IsEqualTo([]*models.Response{
+			{
+				StatusCode:  "Success",
+				Index:       types.NewUint(1),
+				InvoiceUID:  types.NewString("148689AB8B26D37C5B3202E81E1C5FCE1B2EEA7B"),
+				InvoiceMark: types.NewUint64(400001868549304),
+			},
+			{
+				StatusCode:  "Success",
+				Index:       types.NewUint(2),
+				InvoiceUID:  types.NewString("72684BA069C4CF9CDEDCF3EBA30E40D0AF5890C4"),
+				InvoiceMark: types.NewUint64(400001868549305),
+			},
+		})
+	})
+
+	t.Run("should succeed with errors", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBuffer(sendErrorResp)),
+			}, nil))
+
+		resp, err := client.SendDocs(&models.InvoicesDoc{})
+		assert.ThatError(t, err).
+			IsNotNil().
+			HasExactMessage("sending doc 4 errors:[ Code:204 - Message:AA is mandatory for this invoice type, " +
+				"Code:212 - Message:AA element must be number (positive) for issuer from Greece, " +
+				"Code:204 - Message:AA is mandatory for this invoice type, " +
+				"Code:212 - Message:AA element must be number (positive) for issuer from Greece ]")
+		ft.AssertThat(resp).IsNotNil().IsEqualTo([]*models.Response{
+			{
+				StatusCode: "ValidationError",
+				Index:      types.NewUint(1),
+				Errors: models.Errors{Error: []models.Error{
+					{Message: "AA is mandatory for this invoice type", Code: "204"},
+					{Message: "AA element must be number (positive) for issuer from Greece", Code: "212"},
+				}},
+			},
+			{
+				StatusCode: "ValidationError",
+				Index:      types.NewUint(2),
+				Errors: models.Errors{Error: []models.Error{
+					{Message: "AA is mandatory for this invoice type", Code: "204"},
+					{Message: "AA element must be number (positive) for issuer from Greece", Code: "212"},
+				}},
+			},
+		})
+	})
+}
+
+func runRequestTest(t *testing.T, client *Client, f func() (*models.RequestedDoc, error), path, errPrefix string) {
 	t.Helper()
 	ft := assert.NewFluentT(t)
 	t.Run("should fail if api call fails", func(t *testing.T) {
@@ -126,60 +336,63 @@ func runRequestTest(t *testing.T, client *Client, f func() (*types.RequestedDoc,
 
 		docs, err := f()
 		ft.AssertThat(err).IsNil()
+		ft.AssertThatStruct(docs.InvoicesDoc.Invoices[0]).IsEqualTo(expectedInvoice())
 		ft.AssertThatSlice(docs.InvoicesDoc.Invoices).HasSize(1).Contains(expectedInvoice())
 	})
 }
 
-func expectedInvoice() types.Invoice {
-	return types.Invoice{
-		UID:  "123",
-		Mark: "mark123",
-		Issuer: types.Issuer{
+func expectedInvoice() models.Invoice {
+	return models.Invoice{
+		UID:  types.NewString("123"),
+		Mark: types.NewUint64(321),
+		Issuer: &models.PartyType{
 			VatNumber: "123456789",
 			Country:   "GR",
-			Branch:    "0",
+			Branch:    0,
 		},
-		Counterpart: types.Counterpart{
+		Counterpart: &models.PartyType{
 			VatNumber: "987654321",
 			Country:   "GR",
-			Branch:    "0",
-			Name:      "",
-			Address: types.Address{
-				Street:     "Some address",
+			Branch:    0,
+			Address: &models.Address{
+				Street:     types.NewString("Some address"),
+				Number:     types.NewString("100"),
 				PostalCode: "11111",
 				City:       "Athens",
 			},
 		},
-		InvoiceHeader: types.InvoiceHeader{
+		InvoiceHeader: &models.InvoiceHeader{
 			Series:               "~",
 			Aa:                   "23",
 			IssueDate:            "2021-02-10",
 			InvoiceType:          "2.1",
-			VatPaymentSuspension: "false",
 			Currency:             "EUR",
+			VatPaymentSuspension: types.NewBool(false),
 		},
-		PaymentMethods: types.PaymentMethods{
-			PaymentMethodDetails: types.PaymentMethodDetails{
-				Type:   "5",
-				Amount: "62",
+		PaymentMethods: &models.PaymentMethods{
+			PaymentMethodDetails: &models.PaymentMethodDetails{
+				Type:              5,
+				Amount:            62.00,
+				PaymentMethodInfo: "some payment info",
 			},
 		},
-		InvoiceDetails: types.InvoiceDetails{
-			LineNumber:  "1",
-			NetValue:    "50",
-			VatCategory: "1",
-			VatAmount:   "12",
+		InvoiceDetails: []*models.InvoiceDetails{
+			{
+				LineNumber:  1,
+				NetValue:    50.00,
+				VatCategory: 1,
+				VatAmount:   12,
+			},
 		},
-		InvoiceSummary: types.InvoiceSummary{
-			TotalNetValue:         "50",
-			TotalVatAmount:        "12",
-			TotalWithheldAmount:   "0",
-			TotalFeesAmount:       "0",
-			TotalStampDutyAmount:  "0",
-			TotalOtherTaxesAmount: "0",
-			TotalDeductionsAmount: "0",
-			TotalGrossValue:       "62",
-			IncomeClassification:  types.IncomeClassification{},
+		InvoiceSummary: &models.InvoiceSummary{
+			TotalNetValue:         50,
+			TotalVatAmount:        12,
+			TotalWithheldAmount:   0,
+			TotalFeesAmount:       0,
+			TotalStampDutyAmount:  0,
+			TotalOtherTaxesAmount: 0,
+			TotalDeductionsAmount: 0,
+			TotalGrossValue:       62,
 		},
 	}
 }

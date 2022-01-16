@@ -1,4 +1,4 @@
-package types
+package models
 
 type RequestedProviderDoc struct {
 	ContinuationToken struct {

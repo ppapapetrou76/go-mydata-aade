@@ -9,6 +9,7 @@ issues:
         - testpackage
         - goerr113
         - varnamelen
+        - funlen
 
 linters:
   enable-all: true
@@ -35,8 +36,7 @@ linters-settings:
     min-confidence: 0
 
   gocyclo:
-    # minimal code complexity to report, 30 by default (we should lower it to around 15-17)
-    min-complexity: 25
+    min-complexity: 15
 
   maligned:
     # print struct with more effective memory layout or not, false by default
@@ -53,6 +53,8 @@ linters-settings:
       - performance
       - style
       - experimental
+      - diagnostic
+      - opinionated
 
   wrapcheck:
     # An array of strings that specify substrings of signatures to ignore.

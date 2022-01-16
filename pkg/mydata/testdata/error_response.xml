@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResponseDoc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <response>
+        <statusCode>ValidationError</statusCode>
+        <errors>
+            <error>
+                <message>Invoice with ΜΑΡΚ 123 not found for VAT number 123456789</message>
+                <code>301</code>
+            </error>
+        </errors>
+    </response>
+</ResponseDoc>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResponseDoc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <response>
+        <index>1</index>
+        <statusCode>ValidationError</statusCode>
+        <errors>
+            <error>
+                <message>AA is mandatory for this invoice type</message>
+                <code>204</code>
+            </error>
+            <error>
+                <message>AA element must be number (positive) for issuer from Greece</message>
+                <code>212</code>
+            </error>
+        </errors>
+    </response>
+    <response>
+        <index>2</index>
+        <statusCode>ValidationError</statusCode>
+        <errors>
+            <error>
+                <message>AA is mandatory for this invoice type</message>
+                <code>204</code>
+            </error>
+            <error>
+                <message>AA element must be number (positive) for issuer from Greece</message>
+                <code>212</code>
+            </error>
+        </errors>
+    </response>
+</ResponseDoc>
