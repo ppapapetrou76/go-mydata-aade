@@ -9,6 +9,20 @@
 # go-myDATA-aade
 A Go based SDK to communicate with the [myDATA Rest API](https://mydata-prod-apim.portal.azure-api.net/docs/services/mydata-prod-api-func/operations/post-cancelinvoice) provided by the Greek Government
 
+## Quick setup-giode
+1. Create your myDATA user account [here](https://www1.aade.gr/saadeapps2/bookkeeper-web) or if you want to test the API in a developer environment [here](https://mydata-register.azurewebsites.net/)
+2. Add the client ( `github.com/ppapapetrou76/go-mydata-aade` as dependency to your project 
+3. Initialize the client as below
+```go
+	client, err := mydata.NewClient(&mydata.Config{
+		Host:            "https://mydata-dev.azure-api.net",
+		UserID:          "<YOUR_USER_ID>",
+		SubscriptionKey: "<YOUR_SUBSCRIPTION_KEY>",
+	})
+```
+4. Invoke client operations such as `CancelInvoice` or `RequestTransmittedDocs`
+5. You can check the full list of implemented functions [here](https://pkg.go.dev/github.com/ppapapetrou76/go-mydata-aade)
+
 ## Supported methods
 ### ERP Methods
 - [x] RequestDocs (Returns all invoices submitted by other parties and the receiver is the authorized entity)
