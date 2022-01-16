@@ -1,0 +1,47 @@
+<InvoicesDoc xmlns="http://www.aade.gr/myDATA/invoice/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:icls="https://www.aade.gr/myDATA/incomeClassificaton/v1.0" xmlns:ecls="https://www.aade.gr/myDATA/expensesClassificaton/v1.0" xsi:schemaLocation="http://www.aade.gr/myDATA/invoice/v1.0/InvoicesDoc-v1.0.4.xsd">
+    <invoice>
+        <issuer>
+            <vatNumber>999999999</vatNumber>
+            <country>GR</country>
+            <branch>1</branch>
+        </issuer>
+        <counterpart>
+            <vatNumber>888888888</vatNumber>
+            <country>GR</country>
+            <branch>1</branch>
+        </counterpart>
+        <invoiceHeader>
+            <series>0</series>
+            <aa>101</aa>
+            <issueDate>2021-11-22</issueDate>
+            <invoiceType>8.2</invoiceType>
+            <currency>EUR</currency>
+            <correlatedInvoices>4000000nnnnnnnn</correlatedInvoices>
+        </invoiceHeader>
+        <paymentMethods>
+            <paymentMethodDetails>
+                <type>3</type>
+                <amount>1760.00</amount>
+                <paymentMethodInfo>Payment Method Info...</paymentMethodInfo>
+            </paymentMethodDetails>
+        </paymentMethods>
+        <invoiceDetails>
+            <lineNumber>1</lineNumber>
+            <recType>3</recType>
+            <netValue>160.00</netValue>
+            <vatCategory>8</vatCategory>
+            <vatAmount>0.00</vatAmount>
+            <otherTaxesPercentCategory>11</otherTaxesPercentCategory>
+        </invoiceDetails>
+        <invoiceSummary>
+            <totalNetValue>160.00</totalNetValue>
+            <totalVatAmount>0.00</totalVatAmount>
+            <totalWithheldAmount>0.00</totalWithheldAmount>
+            <totalFeesAmount>0.00</totalFeesAmount>
+            <totalStampDutyAmount>0.00</totalStampDutyAmount>
+            <totalOtherTaxesAmount>0.00</totalOtherTaxesAmount>
+            <totalDeductionsAmount>0.00</totalDeductionsAmount>
+            <totalGrossValue>160.00</totalGrossValue>
+        </invoiceSummary>
+    </invoice>
+</InvoicesDoc>

@@ -12,9 +12,10 @@ github.com/ppapapetrou76/go-testing/internal/pkg/types
 github.com/ppapapetrou76/go-testing/internal/pkg/utils
 github.com/ppapapetrou76/go-testing/internal/pkg/values
 github.com/ppapapetrou76/go-testing/types
-# github.com/ppapapetrou76/go-utils v0.0.1
+# github.com/ppapapetrou76/go-utils v0.0.2
 ## explicit; go 1.17
 github.com/ppapapetrou76/go-utils/pkg/multierror
+github.com/ppapapetrou76/go-utils/pkg/types
 github.com/ppapapetrou76/go-utils/pkg/validation
 # github.com/r3labs/diff/v2 v2.14.3
 ## explicit; go 1.13

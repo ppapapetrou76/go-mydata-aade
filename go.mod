@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/deepmap/oapi-codegen v1.9.0
 	github.com/ppapapetrou76/go-testing v0.0.7
-	github.com/ppapapetrou76/go-utils v0.0.1
+	github.com/ppapapetrou76/go-utils v0.0.2
 )
 
 require (

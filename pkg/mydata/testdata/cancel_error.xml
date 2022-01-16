@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResponseDoc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <response>
+        <statusCode>ValidationError</statusCode>
+        <errors>
+            <error>
+                <message>Invoice with MARK 400001868549153 cannot be canceled because of being already canceled</message>
+                <code>251</code>
+            </error>
+        </errors>
+    </response>
+</ResponseDoc>
