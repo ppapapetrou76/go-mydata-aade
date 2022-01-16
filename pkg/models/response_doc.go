@@ -26,6 +26,7 @@ type Error struct {
 	Code    string `xml:"code"`
 }
 
+// Error implements the error interface and returns a human-readable representation of the given error.
 func (e Error) Error() string {
 	return fmt.Sprintf("Code:%s - Message:%s", e.Code, e.Message)
 }
@@ -34,6 +35,7 @@ type Errors struct {
 	Error []Error `xml:"error"`
 }
 
+// HasErrors returns true if the response contains at least one errors, else false.
 func (rDoc ResponseDoc) HasErrors() bool {
 	for _, resp := range rDoc.Response {
 		if len(resp.Errors.Error) > 0 {
@@ -44,6 +46,8 @@ func (rDoc ResponseDoc) HasErrors() bool {
 	return false
 }
 
+// Errors returns all errors of the response doc wrapped with a given prefix.
+// If no errors found then it returns nil.
 func (rDoc ResponseDoc) Errors(prefix string) error {
 	errs := multierror.NewPrefixed(prefix)
 	for _, resp := range rDoc.Response {
