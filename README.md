@@ -13,13 +13,13 @@ A Go based SDK to communicate with the [myDATA Rest API](https://mydata-prod-api
 ### ERP Methods
 - [x] RequestDocs (Returns all invoices submitted by other parties and the receiver is the authorized entity)
 - [x] RequestTransmittedDocs (Returns all invoices submitted by the authorized entity to third-parties)
+- [x] CancelInvoice (Cancels an already issued invoice without issuing a new one)
+- [x] SendInvoices (Submits one or more invoices for a given entity)
 
 ### Provider Methods
 
 ## To be implemented soon
 ### ERP Methods
-- [ ] CancelInvoice
-- [ ] SendInvoices
 - [ ] SendExpensesClassification
 - [ ] SendIncomeClassification
 
