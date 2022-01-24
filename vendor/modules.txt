@@ -1,4 +1,4 @@
-# github.com/deepmap/oapi-codegen v1.9.0
+# github.com/deepmap/oapi-codegen v1.9.1
 ## explicit; go 1.16
 github.com/deepmap/oapi-codegen/pkg/runtime
 github.com/deepmap/oapi-codegen/pkg/types
@@ -24,8 +24,8 @@ github.com/r3labs/diff/v2
 ## explicit
 github.com/vmihailenco/msgpack
 github.com/vmihailenco/msgpack/codes
-# golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
-## explicit; go 1.11
+# golang.org/x/net v0.0.0-20210913180222-943fd674d43e
+## explicit; go 1.17
 golang.org/x/net/context
 # google.golang.org/appengine v1.6.6
 ## explicit; go 1.11
