@@ -5,7 +5,7 @@ github.com/deepmap/oapi-codegen/pkg/types
 # github.com/golang/protobuf v1.5.2
 ## explicit; go 1.9
 github.com/golang/protobuf/proto
-# github.com/ppapapetrou76/go-testing v0.0.7
+# github.com/ppapapetrou76/go-testing v0.0.8
 ## explicit; go 1.17
 github.com/ppapapetrou76/go-testing/assert
 github.com/ppapapetrou76/go-testing/internal/pkg/types
@@ -17,7 +17,7 @@ github.com/ppapapetrou76/go-testing/types
 github.com/ppapapetrou76/go-utils/pkg/multierror
 github.com/ppapapetrou76/go-utils/pkg/types
 github.com/ppapapetrou76/go-utils/pkg/validation
-# github.com/r3labs/diff/v2 v2.14.3
+# github.com/r3labs/diff/v2 v2.14.6
 ## explicit; go 1.13
 github.com/r3labs/diff/v2
 # github.com/vmihailenco/msgpack v4.0.4+incompatible

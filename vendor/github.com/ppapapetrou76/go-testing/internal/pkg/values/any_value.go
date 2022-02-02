@@ -91,12 +91,12 @@ func (s AnyValue) HasTypeOf(t reflect.Type) bool {
 
 // NewAnyValue creates and returns an AnyValue struct initialed with the given value.
 func NewAnyValue(value interface{}) AnyValue {
-	switch v := value.(type) {
+	switch cValue := value.(type) {
 	case nil:
-		return AnyValue{value: v}
+		return AnyValue{value: cValue}
 	case interface{}:
-		return AnyValue{value: v}
+		return AnyValue{value: cValue}
 	default:
-		panic(fmt.Sprintf("expected interface{} value type but got %T type", v))
+		panic(fmt.Sprintf("expected interface{} value type but got %T type", cValue))
 	}
 }

@@ -20,6 +20,12 @@ func RemoveSpaces(value string) string {
 	return strings.ReplaceAll(value, " ", "")
 }
 
+// RemoveNewLines removes all new lines from the given string.
+func RemoveNewLines(value string) string {
+	value = strings.ReplaceAll(value, "\r\n", "")
+	return strings.ReplaceAll(value, "\n", "")
+}
+
 // IsEqualTo returns true if the value is equal to the expected value, else false.
 func (s StringValue) IsEqualTo(expected interface{}) bool {
 	return s.DecoratedValue() == s.decoratedValue(expected)
@@ -75,14 +81,34 @@ func (s StringValue) DoesNotContain(expected interface{}) bool {
 	return !s.Contains(s.decoratedValue(expected))
 }
 
+// IsSubstringOf returns true if the string is substring of the given string.
+func (s StringValue) IsSubstringOf(expected interface{}) bool {
+	return strings.Contains(NewStringValue(s.decoratedValue(expected)).value, s.DecoratedValue())
+}
+
 // HasSize returns true if the string has the expected size else false.
 func (s StringValue) HasSize(length int) bool {
 	return s.Size() == length
 }
 
+// HasSizeGreaterThan returns true if the string has size greater than the given value else false.
+func (s StringValue) HasSizeGreaterThan(length int) bool {
+	return s.Size() > length
+}
+
+// HasSizeGreaterThanOrEqual returns true if the string has size greater than the given value else false.
+func (s StringValue) HasSizeGreaterThanOrEqual(length int) bool {
+	return s.Size() >= length
+}
+
 // HasSizeLessThan returns true if the string has size less than the given value else false.
 func (s StringValue) HasSizeLessThan(length int) bool {
 	return s.Size() < length
+}
+
+// HasSizeLessThanOrEqual returns true if the string has size less than the given value else false.
+func (s StringValue) HasSizeLessThanOrEqual(length int) bool {
+	return s.Size() <= length
 }
 
 // Size returns the string size.

@@ -72,12 +72,14 @@ github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsK
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/ppapapetrou76/go-testing v0.0.7 h1:6zjWzv7rdMdyLApqKUIWyvnWdOcNBdfp+9bPN+qEnj8=
 github.com/ppapapetrou76/go-testing v0.0.7/go.mod h1:hy4k0LzqO5kpsIg3doqELlyi4EM8LV0qN+pAQlDNXrQ=
+github.com/ppapapetrou76/go-testing v0.0.8 h1:7hXPVy1xsoM66UyvtyQ5/moPZueLUWy9zsrosHKXTqY=
+github.com/ppapapetrou76/go-testing v0.0.8/go.mod h1:W8tDShsSKndO+PoHIakmYDrc+wQxGIrXp6bQXbDIYYY=
 github.com/ppapapetrou76/go-utils v0.0.2 h1:MMIsk5knQk1lzxP1ru6yY4dCyADxIzJR15iKGbAgGY0=
 github.com/ppapapetrou76/go-utils v0.0.2/go.mod h1:4YhF00bSvljvjLtVGFBrsddvq1nm3LwfIXqAyiEPiLY=
-github.com/r3labs/diff/v2 v2.14.3 h1:zVp2yr3Fhf/k7HJar06GHASp0rFS4qdLt8ZikgSCb7Q=
 github.com/r3labs/diff/v2 v2.14.3/go.mod h1:I8noH9Fc2fjSaMxqF3G2lhDdC0b+JXCfyx85tWFM9kc=
+github.com/r3labs/diff/v2 v2.14.6 h1:jd/9mrYWG3rQLhdqGEAChzbV8HOk9iL2b+LPre8yqzU=
+github.com/r3labs/diff/v2 v2.14.6/go.mod h1:I8noH9Fc2fjSaMxqF3G2lhDdC0b+JXCfyx85tWFM9kc=
 github.com/rogpeppe/go-internal v1.6.1/go.mod h1:xXDCJY+GAPziupqXw64V24skbSoqbTEfhy4qGm1nDQc=
 github.com/rogpeppe/go-internal v1.8.0 h1:FCbCCtXNOY3UtUuHUYaghJg4y7Fd14rXifAYUAtL9R8=
 github.com/rogpeppe/go-internal v1.8.0/go.mod h1:WmiCO8CzOY8rg0OYDC4/i/2WRWAB6poM+XZ2dLUbcbE=

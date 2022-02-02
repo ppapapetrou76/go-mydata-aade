@@ -47,7 +47,7 @@ func (d DurationValue) isShorter(expected DurationValue) bool {
 func NewDurationValue(value interface{}) DurationValue {
 	switch v := value.(type) {
 	case time.Duration:
-		return DurationValue{value: value.(time.Duration)}
+		return DurationValue{value: v}
 	default:
 		panic(fmt.Sprintf("expected time.Duration value type but got %T type", v))
 	}

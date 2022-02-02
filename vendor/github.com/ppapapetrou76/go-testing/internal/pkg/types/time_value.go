@@ -62,7 +62,7 @@ func (t TimeValue) isBefore(expected TimeValue) bool {
 func NewTimeValue(value interface{}) TimeValue {
 	switch v := value.(type) {
 	case time.Time:
-		return TimeValue{value: value.(time.Time)}
+		return TimeValue{value: v}
 	default:
 		panic(fmt.Sprintf("expected time.Time value type but got %T type", v))
 	}
