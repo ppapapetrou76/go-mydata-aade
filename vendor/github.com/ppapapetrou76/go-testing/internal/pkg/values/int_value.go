@@ -53,18 +53,18 @@ func (i IntValue) equals(expected IntValue) bool {
 
 // NewIntValue creates and returns an IntValue struct initialed with the given value.
 func NewIntValue(value interface{}) IntValue {
-	switch v := value.(type) {
+	switch cValue := value.(type) {
 	case int:
-		return IntValue{value: value.(int)}
+		return IntValue{value: cValue}
 	case int8:
-		return IntValue{value: int(value.(int8))}
+		return IntValue{value: int(cValue)}
 	case int16:
-		return IntValue{value: int(value.(int16))}
+		return IntValue{value: int(cValue)}
 	case int32:
-		return IntValue{value: int(value.(int32))}
+		return IntValue{value: int(cValue)}
 	case int64:
-		return IntValue{value: int(value.(int64))}
+		return IntValue{value: int(cValue)}
 	default:
-		panic(fmt.Sprintf("expected int value type but got %T type", v))
+		panic(fmt.Sprintf("expected int value type but got %T type", cValue))
 	}
 }

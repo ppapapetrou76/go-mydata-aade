@@ -30,6 +30,13 @@ func IgnoringWhiteSpaces() StringOpt {
 	}
 }
 
+// IgnoringNewLines removes the new lines from the value under assertion.
+func IgnoringNewLines() StringOpt {
+	return func(c *AssertableString) {
+		c.actual = c.actual.AddDecorator(values.RemoveNewLines)
+	}
+}
+
 // ThatString returns an AssertableString structure initialized with the test reference and the actual value to assert.
 func ThatString(t *testing.T, actual string, opts ...StringOpt) AssertableString {
 	t.Helper()
@@ -195,6 +202,16 @@ func (a AssertableString) DoesNotContain(substring string) AssertableString {
 	return a
 }
 
+// IsSubstringOf asserts if the assertable string is a substring of the given element
+// It errors the test if it does not contain it.
+func (a AssertableString) IsSubstringOf(someString string) AssertableString {
+	a.t.Helper()
+	if !a.actual.IsSubstringOf(someString) {
+		a.t.Error(shouldBeSubstringOf(a.actual, someString))
+	}
+	return a
+}
+
 // StartsWith asserts if the assertable string starts with the given substring
 // It errors the test if it doesn't start with the given substring.
 func (a AssertableString) StartsWith(substring string) AssertableString {
@@ -245,12 +262,52 @@ func (a AssertableString) HasSameSizeAs(substring string) AssertableString {
 	return a
 }
 
+// HasSizeBetween asserts if the assertable string has bigger size of the first given string and less size than the second given string
+// It errors the test if the assertable string has the same or less size than the first string or greater than or the same size to the second string.
+func (a AssertableString) HasSizeBetween(shortString, longString string) AssertableString {
+	a.t.Helper()
+	if a.actual.HasSizeLessThanOrEqual(len(shortString)) || a.actual.HasSizeGreaterThanOrEqual(len(longString)) {
+		a.t.Error(shouldHaveSizeBetween(a.actual, shortString, longString))
+	}
+	return a
+}
+
+// HasSizeGreaterThan asserts if the assertable string has bigger size of the given string
+// It errors the test if the assertable string has the less or equal size to the given one.
+func (a AssertableString) HasSizeGreaterThan(substring string) AssertableString {
+	a.t.Helper()
+	if !(a.actual.HasSizeGreaterThan(len(substring))) {
+		a.t.Error(shouldHaveGreaterSizeThan(a.actual, substring))
+	}
+	return a
+}
+
+// HasSizeGreaterThanOrEqualTo asserts if the assertable string has bigger os the same size of the given string
+// It errors the test if the assertable string has the less size to the given one.
+func (a AssertableString) HasSizeGreaterThanOrEqualTo(substring string) AssertableString {
+	a.t.Helper()
+	if !(a.actual.HasSizeGreaterThanOrEqual(len(substring))) {
+		a.t.Error(shouldHaveGreaterSizeThanOrEqual(a.actual, substring))
+	}
+	return a
+}
+
 // HasSizeLessThan asserts if the assertable string's length is less than the size of the given string
 // It errors the test if they don't have the same size.
 func (a AssertableString) HasSizeLessThan(substring string) AssertableString {
 	a.t.Helper()
 	if !(a.actual.HasSizeLessThan(len(substring))) {
 		a.t.Error(shouldHaveLessSizeThan(a.actual, substring))
+	}
+	return a
+}
+
+// HasSizeLessThanOrEqualTo asserts if the assertable string's length is less than or equal to the size of the given string
+// It errors the test if they don't have the same size.
+func (a AssertableString) HasSizeLessThanOrEqualTo(substring string) AssertableString {
+	a.t.Helper()
+	if !(a.actual.HasSizeLessThanOrEqual(len(substring))) {
+		a.t.Error(shouldHaveLessSizeThanOrEqual(a.actual, substring))
 	}
 	return a
 }

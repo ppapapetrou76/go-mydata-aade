@@ -18,12 +18,12 @@ func (v ErrorValue) Value() interface{} {
 
 // NewErrorValue creates and returns a ErrorValue struct initialed with the given value.
 func NewErrorValue(value interface{}) ErrorValue {
-	switch v := value.(type) {
+	switch cValue := value.(type) {
 	case nil:
 		return ErrorValue{}
 	case error:
-		return ErrorValue{value: v}
+		return ErrorValue{value: cValue}
 	default:
-		panic(fmt.Sprintf("expected error value type but got %T type", v))
+		panic(fmt.Sprintf("expected error value type but got %T type", cValue))
 	}
 }

@@ -53,18 +53,18 @@ func (i UIntValue) equals(expected UIntValue) bool {
 
 // NewUIntValue creates and returns a UIntValue struct initialed with the given value.
 func NewUIntValue(value interface{}) UIntValue {
-	switch v := value.(type) {
+	switch cValue := value.(type) {
 	case uint:
-		return UIntValue{value: value.(uint)}
+		return UIntValue{value: cValue}
 	case uint8:
-		return UIntValue{value: uint(value.(uint8))}
+		return UIntValue{value: uint(cValue)}
 	case uint16:
-		return UIntValue{value: uint(value.(uint16))}
+		return UIntValue{value: uint(cValue)}
 	case uint32:
-		return UIntValue{value: uint(value.(uint32))}
+		return UIntValue{value: uint(cValue)}
 	case uint64:
-		return UIntValue{value: uint(value.(uint64))}
+		return UIntValue{value: uint(cValue)}
 	default:
-		panic(fmt.Sprintf("expected uint value type but got %T type", v))
+		panic(fmt.Sprintf("expected uint value type but got %T type", cValue))
 	}
 }

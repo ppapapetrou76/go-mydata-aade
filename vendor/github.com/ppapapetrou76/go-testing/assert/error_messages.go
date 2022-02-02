@@ -16,20 +16,20 @@ func shouldBeEqual(actual types.Assertable, expected interface{}) string {
 
 	if !skipDetailedDiff {
 		diffs, _ := diff.Diff(expected, actual.Value())
-		for _, d := range diffs {
-			if len(d.Path) == 0 {
+		for _, diff := range diffs {
+			if len(diff.Path) == 0 {
 				continue
 			}
-			switch d.Type {
+			switch diff.Type {
 			case "delete":
-				path := strings.Join(d.Path, ":")
-				diffMessage.WriteString(fmt.Sprintf("actual value of %+v is expected but missing from %s\n", d.To, path))
+				path := strings.Join(diff.Path, ":")
+				diffMessage.WriteString(fmt.Sprintf("actual value of %+v is expected but missing from %s\n", diff.To, path))
 			case "create":
-				path := strings.Join(d.Path, ":")
-				diffMessage.WriteString(fmt.Sprintf("actual value of %+v is not expected in %s\n", d.To, path))
+				path := strings.Join(diff.Path, ":")
+				diffMessage.WriteString(fmt.Sprintf("actual value of %+v is not expected in %s\n", diff.To, path))
 			case "update":
-				path := strings.Join(d.Path, ":")
-				diffMessage.WriteString(fmt.Sprintf("actual value of %+v is different in %s from %+v\n", d.To, path, d.From))
+				path := strings.Join(diff.Path, ":")
+				diffMessage.WriteString(fmt.Sprintf("actual value of %+v is different in %s from %+v\n", diff.To, path, diff.From))
 			}
 		}
 	}
@@ -113,6 +113,10 @@ func shouldNotContain(actual types.Assertable, elements interface{}) string {
 	return fmt.Sprintf("assertion failed: containable [%v] should not contain [%+v], but it does", actual.Value(), elements)
 }
 
+func shouldBeSubstringOf(actual types.Assertable, elements interface{}) string {
+	return fmt.Sprintf("assertion failed: containable [%v] should be substring of [%+v], but it does", actual.Value(), elements)
+}
+
 func shouldBeMap(actual types.Assertable) string {
 	return fmt.Sprintf("assertion failed: assertable should be a map but it is %T", reflect.ValueOf(actual.Value()).Kind())
 }
@@ -161,8 +165,24 @@ func shouldHaveSameSizeAs(actual types.Assertable, substr string) string {
 	return fmt.Sprintf("assertion failed: expected size of [%v] should be same as the size of [%+v], but it isn't", actual.Value(), substr)
 }
 
+func shouldHaveSizeBetween(actual types.Assertable, shortString, longString string) string {
+	return fmt.Sprintf("assertion failed: expected size of [%v] should be greater then the size of [%+v] and less than the size of [%+v], but it isn't", actual.Value(), shortString, longString)
+}
+
 func shouldHaveLessSizeThan(actual types.Assertable, substr string) string {
 	return fmt.Sprintf("assertion failed: expected size of [%v] should be less than the size of [%+v], but it isn't", actual.Value(), substr)
+}
+
+func shouldHaveLessSizeThanOrEqual(actual types.Assertable, substr string) string {
+	return fmt.Sprintf("assertion failed: expected size of [%v] should be less than or equal to the size of [%+v], but it isn't", actual.Value(), substr)
+}
+
+func shouldHaveGreaterSizeThan(actual types.Assertable, substr string) string {
+	return fmt.Sprintf("assertion failed: expected size of [%v] should be greater than the size of [%+v], but it isn't", actual.Value(), substr)
+}
+
+func shouldHaveGreaterSizeThanOrEqual(actual types.Assertable, substr string) string {
+	return fmt.Sprintf("assertion failed: expected size of [%v] should be greater than or equalto the size of [%+v], but it isn't", actual.Value(), substr)
 }
 
 func shouldHaveType(actual types.Assertable, value interface{}) string {
