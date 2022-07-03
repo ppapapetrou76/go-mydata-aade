@@ -19,6 +19,7 @@ linters:
     - exhaustivestruct
     - gomoddirectives
     - goerr113
+    - exhaustruct
     # The following linters are deprecated
     - scopelint
     - golint
@@ -55,6 +56,12 @@ linters-settings:
       - experimental
       - diagnostic
       - opinionated
+
+  gci:
+    sections:
+      - standard # Captures all standard packages if they do not match another section.
+      - default # Contains all imports that could not be matched to another section type.
+      - prefix(github.com/ppapapetrou76/go-mydata-aade) # Groups all imports with the specified Prefix.
 
   wrapcheck:
     # An array of strings that specify substrings of signatures to ignore.
