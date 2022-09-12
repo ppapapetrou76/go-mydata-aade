@@ -9,8 +9,10 @@ type RequestedDoc struct {
 }
 
 type InvoicesDoc struct {
-	Xmlns    string    `xml:"xmlns,attr"`
-	Invoices []Invoice `xml:"invoice"`
+	Xmlns     string    `xml:"xmlns,attr"`
+	XmlnsICLS string    `xml:"xmlns:icls,attr"`
+	XmlnsECLS string    `xml:"xmlns:ecls,attr"`
+	Invoices  []Invoice `xml:"invoice"`
 }
 
 type ContinuationToken struct {
@@ -61,42 +63,42 @@ type InvoiceHeader struct {
 }
 
 type IncomeClassificationType struct {
-	ClassificationType     string `xml:"classificationType"`
-	ClassificationCategory string `xml:"classificationCategory"`
-	Amount                 string `xml:"amount"`
-	ID                     *byte  `xml:"id"`
+	ClassificationType     string  `xml:"classificationType"`
+	ClassificationCategory string  `xml:"classificationCategory"`
+	Amount                 float64 `xml:"amount"`
+	ID                     *byte   `xml:"id"`
 }
 
 type ExpensesClassificationType struct {
-	ClassificationType     string `xml:"classificationType"`
-	ClassificationCategory string `xml:"classificationCategory"`
-	Amount                 string `xml:"amount"`
-	ID                     *byte  `xml:"id"`
+	ClassificationType     string  `xml:"classificationType"`
+	ClassificationCategory string  `xml:"classificationCategory"`
+	Amount                 float64 `xml:"amount"`
+	ID                     *byte   `xml:"id"`
 }
 
 type InvoiceDetails struct {
-	LineNumber                uint                        `xml:"lineNumber"`
-	RecType                   *uint                       `xml:"recType"`
-	Quantity                  *float64                    `xml:"quantity"`
-	MeasurementUnit           *uint                       `xml:"measurementUnit"`
-	InvoiceDetailType         *uint                       `xml:"invoiceDetailType"`
-	NetValue                  float64                     `xml:"netValue"`
-	VatCategory               uint                        `xml:"vatCategory"`
-	VatAmount                 float64                     `xml:"vatAmount"`
-	VatExemptionCategory      *uint                       `xml:"vatExemptionCategory"`
-	Dienergia                 *ShipType                   `xml:"dienergia"`
-	DiscountOption            *bool                       `xml:"discountOption"`
-	WithheldAmount            *float64                    `xml:"withheldAmount"`
-	WithheldPercentCategory   *uint                       `xml:"withheldPercentCategory"`
-	StampDutyAmount           *float64                    `xml:"stampDutyAmount"`
-	StampDutyPercentCategory  *uint                       `xml:"stampDutyPercentCategory"`
-	FeesAmount                *float64                    `xml:"feesAmount"`
-	FeesPercentCategory       *uint                       `xml:"feesPercentCategory"`
-	OtherTaxesPercentCategory *uint                       `xml:"otherTaxesPercentCategory"`
-	OtherTaxesAmount          *float64                    `xml:"otherTaxesAmount"`
-	DeductionsAmount          *float64                    `xml:"deductionsAmount"`
-	IncomeClassification      *IncomeClassificationType   `xml:"incomeClassification"`
-	ExpensesClassification    *ExpensesClassificationType `xml:"expensesClassification"`
+	LineNumber                uint                          `xml:"lineNumber"`
+	RecType                   *uint                         `xml:"recType"`
+	Quantity                  *float64                      `xml:"quantity"`
+	MeasurementUnit           *uint                         `xml:"measurementUnit"`
+	InvoiceDetailType         *uint                         `xml:"invoiceDetailType"`
+	NetValue                  float64                       `xml:"netValue"`
+	VatCategory               uint                          `xml:"vatCategory"`
+	VatAmount                 float64                       `xml:"vatAmount"`
+	VatExemptionCategory      *uint                         `xml:"vatExemptionCategory"`
+	Dienergia                 *ShipType                     `xml:"dienergia"`
+	DiscountOption            *bool                         `xml:"discountOption"`
+	WithheldAmount            *float64                      `xml:"withheldAmount"`
+	WithheldPercentCategory   *uint                         `xml:"withheldPercentCategory"`
+	StampDutyAmount           *float64                      `xml:"stampDutyAmount"`
+	StampDutyPercentCategory  *uint                         `xml:"stampDutyPercentCategory"`
+	FeesAmount                *float64                      `xml:"feesAmount"`
+	FeesPercentCategory       *uint                         `xml:"feesPercentCategory"`
+	OtherTaxesPercentCategory *uint                         `xml:"otherTaxesPercentCategory"`
+	OtherTaxesAmount          *float64                      `xml:"otherTaxesAmount"`
+	DeductionsAmount          *float64                      `xml:"deductionsAmount"`
+	IncomeClassification      []*IncomeClassificationType   `xml:"incomeClassification"`
+	ExpensesClassification    []*ExpensesClassificationType `xml:"expensesClassification"`
 }
 
 type ShipType struct {
@@ -107,16 +109,16 @@ type ShipType struct {
 }
 
 type InvoiceSummary struct {
-	TotalNetValue          float64                     `xml:"totalNetValue"`
-	TotalVatAmount         float64                     `xml:"totalVatAmount"`
-	TotalWithheldAmount    float64                     `xml:"totalWithheldAmount"`
-	TotalFeesAmount        float64                     `xml:"totalFeesAmount"`
-	TotalStampDutyAmount   float64                     `xml:"totalStampDutyAmount"`
-	TotalOtherTaxesAmount  float64                     `xml:"totalOtherTaxesAmount"`
-	TotalDeductionsAmount  float64                     `xml:"totalDeductionsAmount"`
-	TotalGrossValue        float64                     `xml:"totalGrossValue"`
-	IncomeClassification   *IncomeClassificationType   `xml:"incomeClassification"`
-	ExpensesClassification *ExpensesClassificationType `xml:"expensesClassification"`
+	TotalNetValue          float64                       `xml:"totalNetValue"`
+	TotalVatAmount         float64                       `xml:"totalVatAmount"`
+	TotalWithheldAmount    float64                       `xml:"totalWithheldAmount"`
+	TotalFeesAmount        float64                       `xml:"totalFeesAmount"`
+	TotalStampDutyAmount   float64                       `xml:"totalStampDutyAmount"`
+	TotalOtherTaxesAmount  float64                       `xml:"totalOtherTaxesAmount"`
+	TotalDeductionsAmount  float64                       `xml:"totalDeductionsAmount"`
+	TotalGrossValue        float64                       `xml:"totalGrossValue"`
+	IncomeClassification   []*IncomeClassificationType   `xml:"incomeClassification"`
+	ExpensesClassification []*ExpensesClassificationType `xml:"expensesClassification"`
 }
 
 type PaymentMethodDetails struct {

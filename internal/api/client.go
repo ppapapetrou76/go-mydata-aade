@@ -40,12 +40,24 @@ type GetRequestdocsParams struct {
 	// Μοναδικός Αριθμός Καταχώρησης
 	Mark *GetRequestdocsParamsMark `json:"mark,omitempty"`
 
+	// Παράμετρος για την τμηματική λήψη των αποτελεσμάτων
+	NextPartitionKey *GetRequestdocsParamsNextPartitionKey `json:"nextPartitionKey,omitempty"`
+
+	// Παράμετρος για την τμηματική λήψη των αποτελεσμάτων
+	NextRowKey *GetRequestdocsParamsNextRowKey `json:"nextRowKey,omitempty"`
+
 	// aade-user-id
 	AadeUserId GetRequestdocsParamsAadeUserId `json:"aade-user-id"`
 }
 
 // GetRequestdocsParamsMark defines parameters for GetRequestdocs.
 type GetRequestdocsParamsMark string
+
+// GetRequestdocsParamsNextPartitionKey defines parameters for GetRequestdocs.
+type GetRequestdocsParamsNextPartitionKey string
+
+// GetRequestdocsParamsNextRowKey defines parameters for GetRequestdocs.
+type GetRequestdocsParamsNextRowKey string
 
 // GetRequestdocsParamsAadeUserId defines parameters for GetRequestdocs.
 type GetRequestdocsParamsAadeUserId string
@@ -55,12 +67,24 @@ type GetRequesttransmitteddocsParams struct {
 	// Μοναδικός Αριθμός Καταχώρησης
 	Mark GetRequesttransmitteddocsParamsMark `json:"mark"`
 
+	// Παράμετρος για την τμηματική λήψη των αποτελεσμάτων
+	NextPartitionKey *GetRequesttransmitteddocsParamsNextPartitionKey `json:"nextPartitionKey,omitempty"`
+
+	// Παράμετρος για την τμηματική λήψη των αποτελεσμάτων
+	NextRowKey *GetRequesttransmitteddocsParamsNextRowKey `json:"nextRowKey,omitempty"`
+
 	// User Id
 	AadeUserId GetRequesttransmitteddocsParamsAadeUserId `json:"aade-user-id"`
 }
 
 // GetRequesttransmitteddocsParamsMark defines parameters for GetRequesttransmitteddocs.
 type GetRequesttransmitteddocsParamsMark string
+
+// GetRequesttransmitteddocsParamsNextPartitionKey defines parameters for GetRequesttransmitteddocs.
+type GetRequesttransmitteddocsParamsNextPartitionKey string
+
+// GetRequesttransmitteddocsParamsNextRowKey defines parameters for GetRequesttransmitteddocs.
+type GetRequesttransmitteddocsParamsNextRowKey string
 
 // GetRequesttransmitteddocsParamsAadeUserId defines parameters for GetRequesttransmitteddocs.
 type GetRequesttransmitteddocsParamsAadeUserId string
@@ -345,6 +369,38 @@ func NewGetRequestdocsRequest(server string, params *GetRequestdocsParams) (*htt
 
 	}
 
+	if params.NextPartitionKey != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "nextPartitionKey", runtime.ParamLocationQuery, *params.NextPartitionKey); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.NextRowKey != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "nextRowKey", runtime.ParamLocationQuery, *params.NextRowKey); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
 	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -395,6 +451,38 @@ func NewGetRequesttransmitteddocsRequest(server string, params *GetRequesttransm
 				queryValues.Add(k, v2)
 			}
 		}
+	}
+
+	if params.NextPartitionKey != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "nextPartitionKey", runtime.ParamLocationQuery, *params.NextPartitionKey); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.NextRowKey != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "nextRowKey", runtime.ParamLocationQuery, *params.NextRowKey); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
 	}
 
 	queryURL.RawQuery = queryValues.Encode()

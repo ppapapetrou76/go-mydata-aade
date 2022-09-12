@@ -41,6 +41,16 @@
                 <vatCategory>1</vatCategory>
                 <vatAmount>12</vatAmount>
                 <lineComments>LineItems</lineComments>
+                <incomeClassification>
+                    <icls:classificationType>E3_561_001</icls:classificationType>
+                    <icls:classificationCategory>category1_2</icls:classificationCategory>
+                    <icls:amount>15</icls:amount>
+                </incomeClassification>
+                <incomeClassification>
+                    <icls:classificationType>E3_561_001</icls:classificationType>
+                    <icls:classificationCategory>category1_3</icls:classificationCategory>
+                    <icls:amount>20</icls:amount>
+                </incomeClassification>
             </invoiceDetails>
             <invoiceSummary>
                 <totalNetValue>50</totalNetValue>
