@@ -288,14 +288,16 @@ func TestClient_SendDocs(t *testing.T) {
 	})
 }
 
-func runRequestTest(t *testing.T, client *Client, f func() (*models.RequestedDoc, error), path, errPrefix string) {
+func runRequestTest(t *testing.T, client *Client, f func(mark string, nextPartitionKey, nextRowKey *string) (*models.RequestedDoc, error), path, errPrefix string) {
 	t.Helper()
 	ft := assert.NewFluentT(t)
+	var mark string
+	var nextPartitionKey, nextRowKey *string = nil, nil
 	t.Run("should fail if api call fails", func(t *testing.T) {
 		client.myDataClient.Client = httpmock.NewMockClient(
 			httpmock.NewMockResponse(&http.Response{}, errors.New("host not found")))
 
-		docs, err := f()
+		docs, err := f(mark, nextPartitionKey, nextRowKey)
 		ft.AssertThat(docs).IsNil()
 		assert.ThatError(t, err).HasExactMessage(
 			fmt.Sprintf("%s: api client failed: Get \"https://mydata-dev.azure-api.net/%s?mark=\": host not found", errPrefix, path))
@@ -308,7 +310,7 @@ func runRequestTest(t *testing.T, client *Client, f func() (*models.RequestedDoc
 				Body:       io.NopCloser(bytes.NewBuffer([]byte("bad request"))),
 			}, nil))
 
-		docs, err := f()
+		docs, err := f(mark, nextPartitionKey, nextRowKey)
 		ft.AssertThat(docs).IsNil()
 		assert.ThatError(t, err).HasExactMessage(
 			fmt.Sprintf("%s: unexpected status code (400): bad request", errPrefix))
@@ -321,7 +323,7 @@ func runRequestTest(t *testing.T, client *Client, f func() (*models.RequestedDoc
 				Body:       io.NopCloser(bytes.NewBuffer([]byte("{}"))),
 			}, nil))
 
-		docs, err := f()
+		docs, err := f(mark, nextPartitionKey, nextRowKey)
 		ft.AssertThat(docs).IsNil()
 		assert.ThatError(t, err).HasExactMessage(
 			fmt.Sprintf("%s: xml parser failed EOF", errPrefix))
@@ -334,10 +336,40 @@ func runRequestTest(t *testing.T, client *Client, f func() (*models.RequestedDoc
 				Body:       io.NopCloser(bytes.NewBuffer(response)),
 			}, nil))
 
-		docs, err := f()
+		docs, err := f(mark, nextPartitionKey, nextRowKey)
 		ft.AssertThat(err).IsNil()
 		ft.AssertThatStruct(docs.InvoicesDoc.Invoices[0]).IsEqualTo(expectedInvoice())
 		ft.AssertThatSlice(docs.InvoicesDoc.Invoices).HasSize(1).Contains(expectedInvoice())
+	})
+
+	t.Run("should include next partition and row key in the URL", func(t *testing.T) {
+		client.myDataClient.Client = httpmock.NewMockClient(
+			httpmock.NewMockResponse(&http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBuffer(response)),
+			}, nil))
+
+		want := map[string][]string{
+			"mark":             {"123"},
+			"nextPartitionKey": {"1"},
+			"nextRowKey":       {"2"},
+		}
+
+		checkParameters := func(_ context.Context, req *http.Request) error {
+			values := req.URL.Query()
+			for k, got := range values {
+				ft.AssertThat(got).IsEqualTo(want[k])
+			}
+
+			return nil
+		}
+		client.myDataClient.RequestEditors = append(client.myDataClient.RequestEditors, checkParameters)
+
+		mark = "123"
+		nextPartitionKeyValue := "1"
+		nextRowKeyValue := "2"
+		_, err := f(mark, &nextPartitionKeyValue, &nextRowKeyValue)
+		ft.AssertThat(err).IsNil()
 	})
 }
 
@@ -382,6 +414,20 @@ func expectedInvoice() models.Invoice {
 				NetValue:    50.00,
 				VatCategory: 1,
 				VatAmount:   12,
+				IncomeClassification: []*models.IncomeClassificationType{
+					{
+						ClassificationType:     "E3_561_001",
+						ClassificationCategory: "category1_2",
+						Amount:                 15,
+						ID:                     nil,
+					},
+					{
+						ClassificationType:     "E3_561_001",
+						ClassificationCategory: "category1_3",
+						Amount:                 20,
+						ID:                     nil,
+					},
+				},
 			},
 		},
 		InvoiceSummary: &models.InvoiceSummary{

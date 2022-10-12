@@ -47,6 +47,24 @@ paths:
               - '{aade-user-id}'
             type: string
             default: '{aade-user-id}'
+        - name: nextPartitionKey
+          in: query
+          description: Παράμετρος για την τμηματική λήψη των αποτελεσμάτων
+          required: false
+          schema:
+            enum:
+              - '{nextPartitionKey}'
+            type: string
+            default: '{nextPartitionKey}'
+        - name: nextRowKey
+          in: query
+          description: Παράμετρος για την τμηματική λήψη των αποτελεσμάτων
+          required: false
+          schema:
+            enum:
+              - '{nextRowKey}'
+            type: string
+            default: '{nextRowKey}'
       responses:
         '200':
           description: 
@@ -98,6 +116,24 @@ paths:
             enum:
               - '{aade-user-id}'
             type: string
+        - name: nextPartitionKey
+          in: query
+          description: Παράμετρος για την τμηματική λήψη των αποτελεσμάτων
+          required: false
+          schema:
+            enum:
+              - '{nextPartitionKey}'
+            type: string
+            default: '{nextPartitionKey}'
+        - name: nextRowKey
+          in: query
+          description: Παράμετρος για την τμηματική λήψη των αποτελεσμάτων
+          required: false
+          schema:
+            enum:
+              - '{nextRowKey}'
+            type: string
+            default: '{nextRowKey}'
       responses:
         '200':
           description: 

@@ -19,6 +19,8 @@ const (
 	defaultTimeout = time.Second * 30
 	defaultHost    = "https://mydata-dev.azure-api.net/"
 	xmlns          = "http://www.aade.gr/myDATA/invoice/v1.0"
+	xmlnsICLS      = "https://www.aade.gr/myDATA/incomeClassificaton/v1.0"
+	xmlnsECLS      = "https://www.aade.gr/myDATA/expensesClassificaton/v1.0"
 )
 
 // Client describes the myDATA Client.
@@ -90,13 +92,25 @@ func NewClient(config *Config) (*Client, error) {
 // RequestTransmittedDocs returns the invoices,cancellations etc., issued by the entity associated to the
 // authenticated user.
 // If the api returns an error, or it is not accessible then the method returns an error with descriptive message.
-func (c Client) RequestTransmittedDocs() (*models.RequestedDoc, error) {
+func (c Client) RequestTransmittedDocs(mark string, nextPartitionKey, nextRowKey *string) (*models.RequestedDoc, error) {
 	const errPrefix = "getting transmitted docs"
 
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
 
-	resp, err := c.myDataClient.GetRequesttransmitteddocs(ctx, &api.GetRequesttransmitteddocsParams{Mark: ""})
+	params := api.GetRequesttransmitteddocsParams{
+		Mark: api.GetRequesttransmitteddocsParamsMark(mark),
+	}
+	if nextPartitionKey != nil {
+		partitionKey := api.GetRequesttransmitteddocsParamsNextPartitionKey(*nextPartitionKey)
+		params.NextPartitionKey = &partitionKey
+	}
+	if nextRowKey != nil {
+		rowKey := api.GetRequesttransmitteddocsParamsNextRowKey(*nextRowKey)
+		params.NextRowKey = &rowKey
+	}
+
+	resp, err := c.myDataClient.GetRequesttransmitteddocs(ctx, &params)
 	if err != nil {
 		return nil, fmt.Errorf("%s: api client failed: %w", errPrefix, err)
 	}
@@ -112,14 +126,25 @@ func (c Client) RequestTransmittedDocs() (*models.RequestedDoc, error) {
 // RequestDocs returns the invoices,cancellations etc., issued by third-party entities and are related to the entity
 // associated to the authenticated user.
 // If the api returns an error, or it is not accessible then the method returns an error with descriptive message.
-func (c Client) RequestDocs() (*models.RequestedDoc, error) {
+func (c Client) RequestDocs(mark string, nextPartitionKey, nextRowKey *string) (*models.RequestedDoc, error) {
 	const errPrefix = "getting docs"
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
 
-	mark := api.GetRequestdocsParamsMark("")
+	requestDocsMark := api.GetRequestdocsParamsMark(mark)
+	params := api.GetRequestdocsParams{
+		Mark: &requestDocsMark,
+	}
+	if nextPartitionKey != nil {
+		partitionKey := api.GetRequestdocsParamsNextPartitionKey(*nextPartitionKey)
+		params.NextPartitionKey = &partitionKey
+	}
+	if nextRowKey != nil {
+		rowKey := api.GetRequestdocsParamsNextRowKey(*nextRowKey)
+		params.NextRowKey = &rowKey
+	}
 
-	resp, err := c.myDataClient.GetRequestdocs(ctx, &api.GetRequestdocsParams{Mark: &mark})
+	resp, err := c.myDataClient.GetRequestdocs(ctx, &params)
 	if err != nil {
 		return nil, fmt.Errorf("%s: api client failed: %w", errPrefix, err)
 	}
@@ -162,6 +187,8 @@ func (c Client) CancelDoc(mark uint64) ([]*models.Response, error) {
 func (c Client) SendDocs(invoiceDoc *models.InvoicesDoc) ([]*models.Response, error) {
 	const errPrefix = "sending doc"
 	invoiceDoc.Xmlns = xmlns
+	invoiceDoc.XmlnsICLS = xmlnsICLS
+	invoiceDoc.XmlnsECLS = xmlnsECLS
 
 	ctx, cancel := context.WithTimeout(context.Background(), c.timeout)
 	defer cancel()
