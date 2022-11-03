@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.17
+      - image: cimg/golang:1.17
 
     environment:
       TEST_RESULTS: /tmp/test-results
