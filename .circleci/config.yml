@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.17
+      - image: cimg/go:1.17
 
     environment:
       TEST_RESULTS: /tmp/test-results
@@ -33,7 +33,7 @@ jobs:
       - save_cache:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
-            - "/go/pkg/mod"
+            - "$HOME/go/pkg/mod"
 
       - store_artifacts:
           path: /tmp/test-results
