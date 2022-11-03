@@ -33,7 +33,7 @@ jobs:
       - save_cache:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
-            - "/go/pkg/mod"
+            - "$HOME/go/pkg/mod"
 
       - store_artifacts:
           path: /tmp/test-results
