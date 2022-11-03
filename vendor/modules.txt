@@ -11,6 +11,8 @@ github.com/golang/protobuf/proto
 # github.com/google/uuid v1.3.0
 ## explicit
 github.com/google/uuid
+# github.com/kr/pretty v0.3.0
+## explicit; go 1.12
 # github.com/ppapapetrou76/go-testing v0.0.8
 ## explicit; go 1.17
 github.com/ppapapetrou76/go-testing/assert
@@ -26,6 +28,8 @@ github.com/ppapapetrou76/go-utils/pkg/validation
 # github.com/r3labs/diff/v2 v2.14.6
 ## explicit; go 1.13
 github.com/r3labs/diff/v2
+# github.com/rogpeppe/go-internal v1.8.0
+## explicit; go 1.11
 # github.com/vmihailenco/msgpack v4.0.4+incompatible
 ## explicit
 github.com/vmihailenco/msgpack
@@ -75,3 +79,5 @@ google.golang.org/protobuf/reflect/protoregistry
 google.golang.org/protobuf/runtime/protoiface
 google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/descriptorpb
+# gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
+## explicit; go 1.11
