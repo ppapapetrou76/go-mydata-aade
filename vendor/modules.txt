@@ -1,7 +1,7 @@
 # github.com/apapsch/go-jsonmerge/v2 v2.0.0
 ## explicit; go 1.12
 github.com/apapsch/go-jsonmerge/v2
-# github.com/deepmap/oapi-codegen v1.12.2
+# github.com/deepmap/oapi-codegen v1.12.3
 ## explicit; go 1.18
 github.com/deepmap/oapi-codegen/pkg/runtime
 github.com/deepmap/oapi-codegen/pkg/types

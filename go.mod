@@ -3,7 +3,7 @@ module github.com/ppapapetrou76/go-mydata-aade
 go 1.17
 
 require (
-	github.com/deepmap/oapi-codegen v1.12.2
+	github.com/deepmap/oapi-codegen v1.12.3
 	github.com/ppapapetrou76/go-testing v0.0.8
 	github.com/ppapapetrou76/go-utils v0.0.2
 )
