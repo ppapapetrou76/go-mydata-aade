@@ -18,6 +18,12 @@ test: mods
 	@ go test -timeout 10s -p 4 -count=1 ./...
 	@ echo "-> Done."
 
+## Runs vulnerability checks
+vuln: mods deps
+	@ echo "-> Running vulnerability checks..."
+	@ $(GOBIN)/govulncheck ./...
+	@ echo "-> Done."
+
 ## Moves the project git-hooks to the git hooks directory
 git-hooks:
 	@ cp -v scripts/hooks/* .git/hooks

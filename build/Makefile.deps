@@ -8,6 +8,7 @@ VERSION_GOBIN:=v0.0.14
 VERSION_GOLANGCILINT:=v1.50.0
 VERSION_GOJUNITREPORT:=v0.9.1
 VERSION_OAPICODEGEN:=v1.12.2
+VERSION_GOVULNCHECK:=latest
 
 ## Installs go modules.
 mods:
@@ -15,7 +16,7 @@ mods:
 	@ go mod tidy
 
 ## Installs all the required binaries for the makefile targets.
-deps: $(GOBIN)/gobin $(GOBIN)/golangci-lint $(GOBIN)/go-junit-report $(GOBIN)/oapi-codegen
+deps: $(GOBIN)/gobin $(GOBIN)/golangci-lint $(GOBIN)/go-junit-report $(GOBIN)/oapi-codegen $(GOBIN)/go-vuln-check
 
 $(GOBIN):
 	@ mkdir -p $(GOBIN)
@@ -55,3 +56,11 @@ $(VERSION_DIR)/.version-oapi-codegen-$(VERSION_OAPICODEGEN): | $(VERSION_DIR)
 $(GOBIN)/oapi-codegen: $(GOBIN)/gobin $(VERSION_DIR)/.version-oapi-codegen-$(VERSION_OAPICODEGEN) | $(GOBIN)
 	@ echo "-> Installing oapi-codegen..."
 	@ go get github.com/deepmap/oapi-codegen@$(VERSION_OAPICODEGEN)
+
+$(VERSION_DIR)/.version-go-vuln-check-$(VERSION_GOVULNCHECK): | $(VERSION_DIR)
+	@ rm -f $(VERSION_DIR)/.version-go-vuln-check-*
+	@ echo $(VERSION_GOVULNCHECK) > $(VERSION_DIR)/.version-go-vuln-check-$(VERSION_GOVULNCHECK)
+
+$(GOBIN)/go-vuln-check: $(GOBIN)/gobin $(VERSION_DIR)/.version-go-vuln-check-$(VERSION_GOVULNCHECK) | $(GOBIN)
+	@ echo "-> Installing govulncheck..."
+	@ go install golang.org/x/vuln/cmd/govulncheck@$(VERSION_GOVULNCHECK)
