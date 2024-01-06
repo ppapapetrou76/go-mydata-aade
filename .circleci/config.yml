@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/go:1.18
+      - image: cimg/go:1.21.5
 
     environment:
       TEST_RESULTS: /tmp/test-results
