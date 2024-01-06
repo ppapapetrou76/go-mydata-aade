@@ -19,6 +19,7 @@ type Response struct {
 	ClassificationMark *uint64 `xml:"classificationMark"`
 	AuthenticationCode *string `xml:"authenticationCode"`
 	CancellationMark   *uint64 `xml:"cancellationMark"`
+	QRCodeURL          *string `xml:"qrUrl"`
 }
 
 type Error struct {
