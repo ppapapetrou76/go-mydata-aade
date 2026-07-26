@@ -65,6 +65,40 @@ paths:
               - '{nextRowKey}'
             type: string
             default: '{nextRowKey}'
+        - name: dateFrom
+          in: query
+          description: "Αρχή χρονικού διαστήματος αναζήτησης για την ημερομηνία έκδοσης"
+          required: false
+          schema:
+            enum:
+              - '{dateFrom}'
+            default: '{dateFrom}'
+            type: string
+            example: 'dd/mm/yyyy'
+        - name: dateTo
+          in: query
+          description: "Τέλος χρονικού διαστήματος αναζήτησης για την ημερομηνία έκδοσης"
+          required: false
+          schema:
+            enum:
+              - '{dateTo}'
+            default: '{dateTo}'
+            type: string
+            example: 'dd/mm/yyyy'
+        - name: invType
+          in: query
+          description: "Τύπος παραστατικού, πρέπει να αντιστοιχεί σύμφωνα με τον πίνακα 8.1 του παραρτήματος"
+          required: false
+          schema:
+            type: string
+            example: '1.1'
+        - name: receiverVatNumber
+          in: query
+          description: "ΑΦΜ αντισυμβαλλόμενου"
+          required: false
+          schema:
+            type: string
+            example: '000000000'
       responses:
         '200':
           description: 
